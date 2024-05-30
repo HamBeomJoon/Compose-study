@@ -6,9 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -49,10 +51,11 @@ class MainActivity : ComponentActivity() {
                             value = text,
                             onValueChange = setValue,
                         )
+                        Spacer(modifier = Modifier.height(24.dp))
                         Button(onClick = {
                             keyboardController?.hide()
                             scope.launch {
-                                snackbarHostState.showSnackbar("Heelo $text")
+                                snackbarHostState.showSnackbar("Hello $text")
                             }
                         }) {
                             Text(text = "클릭!")
