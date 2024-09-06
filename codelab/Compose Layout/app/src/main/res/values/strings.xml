@@ -4,6 +4,9 @@
     <string name="align_your_body">Align Your Body</string>
     <string name="favorite_collections">Favorite Collections</string>
 
+    <string name="bottom_navigation_home">Home</string>
+    <string name="bottom_navigation_profile">Profile</string>
+
     <string name="ab1_inversions">Inversions</string>
     <string name="ab2_quick_yoga">Quick Yoga</string>
     <string name="ab3_stretching">Stretching</string>
