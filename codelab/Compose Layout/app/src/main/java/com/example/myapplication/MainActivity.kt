@@ -22,8 +22,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -87,6 +92,39 @@ fun SearchBar(
 }
 
 @Composable
+fun HomeSection(
+    @StringRes title: Int,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Column(modifier) {
+        Text(
+            text = stringResource(title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+                .padding(horizontal = 16.dp)
+        )
+        content()
+    }
+}
+
+@Composable
+fun HomeScreen(modifier: Modifier = Modifier) {
+    Column(modifier.verticalScroll(rememberScrollState())) {
+        Spacer(Modifier.height(16.dp))
+        SearchBar(Modifier.padding(horizontal = 16.dp))
+        HomeSection(title = R.string.align_your_body) {
+            AlignYourBodyRow()
+        }
+        HomeSection(title = R.string.favorite_collections) {
+            FavoriteCollectionsGrid()
+        }
+        Spacer(Modifier.height(16.dp))
+    }
+}
+
+@Composable
 fun AlignYourBodyElement(
     @DrawableRes drawable: Int,
     @StringRes text: Int,
@@ -123,6 +161,23 @@ fun AlignYourBodyRow(
     ) {
         items(alignYourBodyData) { item ->
             AlignYourBodyElement(item.drawable, item.text)
+        }
+    }
+}
+
+@Composable
+fun FavoriteCollectionsGrid(
+    modifier: Modifier = Modifier
+) {
+    LazyHorizontalGrid(
+        rows = GridCells.Fixed(2),
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier.height(168.dp)
+    ) {
+        items(favoriteCollectionsData) { item ->
+            FavoriteCollectionCard(item.drawable, item.text, Modifier.height(80.dp))
         }
     }
 }
@@ -183,8 +238,20 @@ private data class DrawableStringPair(
 
 @Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
-fun AlignYourBodyRowPreview() {
-    MyApplicationTheme  { AlignYourBodyRow() }
+fun HomeSectionPreview() {
+    MyApplicationTheme {
+        HomeSection(R.string.align_your_body) {
+            AlignYourBodyRow()
+        }
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFF5F0EE, heightDp = 180)
+@Composable
+fun HomeScreenPreview() {
+    MyApplicationTheme {
+        HomeScreen()
+    }
 }
 
 @Preview(showBackground = true)
@@ -203,10 +270,10 @@ fun AlignYourBodyElementPreview() {
 @Composable
 fun FavoriteCollectionCardPreview() {
     MyApplicationTheme {
-        FavoriteCollectionCard(
-            text = R.string.fc2_nature_meditations,
-            drawable = R.drawable.fc2_nature_meditations,
-            modifier = Modifier.padding(8.dp)
+        FavoriteCollectionsGrid(
+//            text = R.string.fc2_nature_meditations,
+//            drawable = R.drawable.fc2_nature_meditations,
+//            modifier = Modifier.padding(8.dp)
         )
     }
 }
