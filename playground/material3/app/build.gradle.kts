@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.playground"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.playground"
@@ -68,4 +68,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.material3)
+    implementation("androidx.compose.material:material:1.8.0-alpha01")
 }
