@@ -188,8 +188,10 @@ fun Home() {
     val lazyListState = rememberLazyListState()
 
     // The background color. The value is changed by the current tab.
-    // TODO 1: Animate this color change.
-    val backgroundColor = if (tabPage == TabPage.Home) Seashell else GreenLight
+    val backgroundColor by animateColorAsState(
+        targetValue = if (tabPage == TabPage.Home) Seashell else GreenLight,
+        label = "background color"
+    )
 
     // The coroutine scope for event handlers calling suspend functions.
     val coroutineScope = rememberCoroutineScope()
@@ -213,15 +215,17 @@ fun Home() {
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(
-            top = padding.calculateTopPadding(),
-            start = padding.calculateLeftPadding(LayoutDirection.Ltr),
-            end = padding.calculateEndPadding(LayoutDirection.Ltr)
-        )) {
+        Box(
+            modifier = Modifier.padding(
+                top = padding.calculateTopPadding(),
+                start = padding.calculateLeftPadding(LayoutDirection.Ltr),
+                end = padding.calculateEndPadding(LayoutDirection.Ltr)
+            )
+        ) {
             LazyColumn(
                 contentPadding = WindowInsets(
                     16.dp,
-                     32.dp,
+                    32.dp,
                     16.dp,
                     padding.calculateBottomPadding() + 32.dp
                 ).asPaddingValues(),
@@ -455,7 +459,7 @@ private fun HomeTabBar(
             indicator = { tabPositions ->
                 HomeTabIndicator(tabPositions, tabPage)
             }
-        ){
+        ) {
             HomeTab(
                 icon = Icons.Default.Home,
                 title = stringResource(R.string.home),
