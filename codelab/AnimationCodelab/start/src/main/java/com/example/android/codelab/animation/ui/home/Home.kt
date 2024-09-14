@@ -1,21 +1,6 @@
-/*
- * Copyright 2021 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.android.codelab.animation.ui.home
 
+import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
@@ -133,6 +118,10 @@ import com.example.android.codelab.animation.ui.Seashell
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.calculateTargetValue
+import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 
 private enum class TabPage {
     Home, Work
@@ -688,6 +677,8 @@ private fun Modifier.swipeToDismiss(
     onDismissed: () -> Unit
 ): Modifier = composed {
     // TODO 6-1: Create an Animatable instance for the offset of the swiped element.
+    val offsetX = remember { Animatable(0f) }
+
     pointerInput(Unit) {
         // Used to calculate a settling position of a fling animation.
         val decay = splineBasedDecay<Float>(this)
@@ -703,6 +694,14 @@ private fun Modifier.swipeToDismiss(
                 awaitPointerEventScope {
                     horizontalDrag(pointerId) { change ->
                         // TODO 6-3: Apply the drag change to the Animatable offset.
+                        // Get the drag amount change to offset the item with
+                        val horizontalDragOffset = offsetX.value + change.positionChange().x
+                        // Need to call this in a launch block in order to run it separately outside of the awaitPointerEventScope
+                        launch {
+                            // Instantly set the Animable to the dragOffset to ensure its moving
+                            // as the user's finger moves
+                            offsetX.snapTo(horizontalDragOffset)
+                        }
                         // Record the velocity of the drag.
                         velocityTracker.addPosition(change.uptimeMillis, change.position)
                         // Consume the gesture event, not passed to external
@@ -713,19 +712,32 @@ private fun Modifier.swipeToDismiss(
                 val velocity = velocityTracker.calculateVelocity().x
                 // TODO 6-4: Calculate the eventual position where the fling should settle
                 //           based on the current offset value and velocity
+                // Add this line to calculate where it would end up with
+                // the current velocity and position
+                val targetOffsetX = decay.calculateTargetValue(offsetX.value, velocity)
                 // TODO 6-5: Set the upper and lower bounds so that the animation stops when it
                 //           reaches the edge.
+                offsetX.updateBounds(
+                    lowerBound = -size.width.toFloat(),
+                    upperBound = size.width.toFloat()
+                )
                 launch {
                     // TODO 6-6: Slide back the element if the settling position does not go beyond
                     //           the size of the element. Remove the element if it does.
+                    if (targetOffsetX.absoluteValue <= size.width) {
+                        // Not enough velocity; Slide back.
+                        offsetX.animateTo(targetValue = 0f, initialVelocity = velocity)
+                    } else {
+                        // Enough velocity to slide away the element to the edge.
+                        offsetX.animateDecay(velocity, decay)
+                        // The element was swiped away.
+                        onDismissed()
+                    }
                 }
             }
         }
     }
-        .offset {
-            // TODO 6-7: Use the animating offset value here.
-            IntOffset(0, 0)
-        }
+        .offset { IntOffset(offsetX.value.roundToInt(), 0) }
 }
 
 @Preview
