@@ -51,7 +51,7 @@ fun rememberMapViewWithLifecycle(): MapView {
             lifecycle.removeObserver(lifecycleObserver)
         }
     }
-    
+
     return mapView
 }
 
