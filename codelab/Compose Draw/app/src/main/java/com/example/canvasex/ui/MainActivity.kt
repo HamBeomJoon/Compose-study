@@ -18,6 +18,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,7 +53,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CanvasExTheme {
-                Graph()
+//                Graph()
+                ArtistCard()
             }
         }
     }
@@ -201,6 +210,28 @@ data class Balance(val date: LocalDate, val amount: BigDecimal)
 @Composable
 fun GreetingPreview() {
     CanvasExTheme {
-        Graph()
+        ArtistCard()
     }
 }
+
+val onClick = {}
+
+@Composable
+fun ArtistCard(/*...*/) {
+    val padding = 16.dp
+    Row(modifier = Modifier.size(width = 400.dp, height = 100.dp)) {
+        Image(modifier = Modifier.requiredSize(150.dp)) {
+        }
+        Column(
+            Modifier
+                .padding(padding)
+                .clickable(onClick = onClick)
+                .fillMaxWidth()
+        ) {
+            // rest of the implementation
+        }
+    }
+
+}
+
+
