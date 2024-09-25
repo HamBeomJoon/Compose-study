@@ -104,8 +104,13 @@ fun RallyApp() {
                 composable(
                     route = "${SingleAccount.route}/{${SingleAccount.accountTypeArg}}",
                     arguments = SingleAccount.arguments
-                ) {
-                    SingleAccountScreen()
+                ) { navBackStackEntry ->
+                    // Retrieve the passed argument
+                    val accountType =
+                        navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)
+
+                    // SingleAccountScreen에 accountType 전달
+                    SingleAccountScreen(accountType)
                 }
             }
         }
