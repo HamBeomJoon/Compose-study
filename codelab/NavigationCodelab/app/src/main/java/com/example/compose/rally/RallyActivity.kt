@@ -102,7 +102,7 @@ fun RallyApp() {
                     BillsScreen()
                 }
                 composable(
-                    route = "${SingleAccount.route}/{${SingleAccount.accountTypeArg}}",
+                    route = SingleAccount.routeWithArgs,
                     arguments = SingleAccount.arguments
                 ) { navBackStackEntry ->
                     // Retrieve the passed argument
